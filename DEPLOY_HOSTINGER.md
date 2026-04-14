@@ -92,3 +92,10 @@ Sube todo el proyecto, incluyendo:
 ## 9) Manejo de errores controlado
 - Si falla MySQL: respuesta controlada 503 y log en `logs/php_errors.log`.
 - Si falla WebSocket: estado “reconectando” sin romper UI.
+
+## Integración de ventas/guardar_venta
+Si tu flujo funcional actual está en archivos personalizados, colócalos en alguna ruta detectada por el integrador:
+- `ventas_original.php` o `legacy/ventas.php` o `modulos/ventas/ventas.php` o `src/ventas.php`
+- `guardar_venta_original.php` o `legacy/guardar_venta.php` o `modulos/ventas/guardar_venta.php` o `src/guardar_venta.php`
+
+El archivo `ventas.php` y `guardar_venta.php` del paquete final no simplifican lógica; solo enrutan al archivo funcional existente.
