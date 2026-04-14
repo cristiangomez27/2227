@@ -1,10 +1,26 @@
 <?php
+function normalizarRolUsuario(?string $rol): string {
+    $rol = strtolower(trim((string)$rol));
+
+    $alias = [
+        'administrador' => 'administrador_general',
+        'admin' => 'administrador_general',
+        'administrador_general' => 'administrador_general',
+        'produccion' => 'produccion',
+        'coordinador_produccion' => 'produccion',
+        'taller' => 'produccion',
+        'ejecutivo_mostrador' => 'ejecutivo_mostrador'
+    ];
+
+    return $alias[$rol] ?? $rol;
+}
+
 function usuarioTieneAcceso($moduloPermitido = []) {
     if (!isset($_SESSION['rol'])) {
         return false;
     }
 
-    $rol = $_SESSION['rol'];
+    $rol = normalizarRolUsuario($_SESSION['rol']);
 
     $permisos = [
         'administrador_general' => [
@@ -20,7 +36,9 @@ function usuarioTieneAcceso($moduloPermitido = []) {
             'usuarios',
             'papelera',
             'taller',
-            'entregas'
+            'entregas',
+            'produccion',
+            'diseno'
         ],
         'ejecutivo_mostrador' => [
             'ventas',
@@ -28,9 +46,11 @@ function usuarioTieneAcceso($moduloPermitido = []) {
             'remisiones',
             'imprimir_remision'
         ],
-        'coordinador_produccion' => [
+        'produccion' => [
             'pedidos',
-            'taller'
+            'taller',
+            'produccion',
+            'diseno'
         ]
     ];
 
@@ -48,6 +68,15 @@ function usuarioTieneAcceso($moduloPermitido = []) {
 }
 
 function esAdministradorGeneral() {
-    return isset($_SESSION['rol']) && $_SESSION['rol'] === 'administrador_general';
+    return isset($_SESSION['rol']) && normalizarRolUsuario($_SESSION['rol']) === 'administrador_general';
+}
+
+function puedeVerModuloDiseno(): bool {
+    if (!isset($_SESSION['rol'])) {
+        return false;
+    }
+
+    $rol = normalizarRolUsuario($_SESSION['rol']);
+    return in_array($rol, ['administrador_general', 'produccion'], true);
 }
 ?>
