@@ -254,6 +254,11 @@ if (isset($_GET['eliminar'])) {
 
 $clientes = $conn->query('SELECT * FROM clientes ORDER BY id DESC');
 ?>
+<?php
+require_once __DIR__ . '/includes/realtime_config.php';
+$appRealtime = app_realtime_config(isset($conn) ? $conn : null);
+$appRealtime['module'] = 'clientes';
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -357,8 +362,9 @@ $clientes = $conn->query('SELECT * FROM clientes ORDER BY id DESC');
             h1 { font-size:28px; }
         }
     </style>
+    <link rel="stylesheet" href="assets/css/dashboard_effect.css">
 </head>
-<body>
+<body data-module="<?php echo htmlspecialchars($appRealtime['module'], ENT_QUOTES, 'UTF-8'); ?>" data-ws-url="<?php echo htmlspecialchars($appRealtime['ws_url'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" data-sound-enabled="<?php echo !empty($appRealtime['sound_enabled']) ? '1' : '0'; ?>" data-sound-file="<?php echo htmlspecialchars($appRealtime['sound_file'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
     <div id="toast" class="toast"><?php echo htmlspecialchars($notificacion, ENT_QUOTES, 'UTF-8'); ?></div>
 
     <aside class="sidebar">
@@ -544,5 +550,6 @@ $clientes = $conn->query('SELECT * FROM clientes ORDER BY id DESC');
             iniciar();
         })();
     </script>
+    <script src="assets/js/app_realtime.js"></script>
 </body>
 </html>
