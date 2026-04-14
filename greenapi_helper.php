@@ -3,6 +3,7 @@
 function cargarCredencialesGreenApi(): array
 {
     $rutasPosibles = [
+        __DIR__ . '/secure_greenapi.php',
         __DIR__ . '/../private/secure_greenapi.php',
         dirname(__DIR__) . '/private/secure_greenapi.php',
         $_SERVER['DOCUMENT_ROOT'] . '/private/secure_greenapi.php'

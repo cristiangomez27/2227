@@ -6,6 +6,7 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 require_once 'config/database.php';
+require_once 'permisos.php';
 
 function existeTabla(mysqli $conn, string $tabla): bool
 {
@@ -149,6 +150,7 @@ if (!empty($configColumns)) {
 
 $alphaPanel = max(0.10, min(0.95, $transparenciaPanel));
 $alphaSidebar = max(0.10, min(0.98, $transparenciaSidebar));
+$puedeVerDiseno = function_exists('puedeVerModuloDiseno') ? puedeVerModuloDiseno() : false;
 
 $pedidosProduccion = [];
 $nuevos = [];
@@ -277,6 +279,11 @@ if (existeTabla($conn, 'pedidos')) {
 
 $tipoMensaje = trim($_GET['tipo'] ?? '');
 $mensajeSistema = trim($_GET['msg'] ?? '');
+?>
+<?php
+require_once __DIR__ . '/includes/realtime_config.php';
+$appRealtime = app_realtime_config(isset($conn) ? $conn : null);
+$appRealtime['module'] = 'produccion';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -930,8 +937,9 @@ $mensajeSistema = trim($_GET['msg'] ?? '');
             }
         }
     </style>
+    <link rel="stylesheet" href="assets/css/dashboard_effect.css">
 </head>
-<body>
+<body data-module="<?php echo htmlspecialchars($appRealtime['module'], ENT_QUOTES, 'UTF-8'); ?>" data-ws-url="<?php echo htmlspecialchars($appRealtime['ws_url'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" data-sound-enabled="<?php echo !empty($appRealtime['sound_enabled']) ? '1' : '0'; ?>" data-sound-file="<?php echo htmlspecialchars($appRealtime['sound_file'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
 
     <div class="mobile-topbar">
         <div class="mobile-topbar-left">
@@ -964,6 +972,9 @@ $mensajeSistema = trim($_GET['msg'] ?? '');
         <a href="ventas.php" title="Ventas"><i class="fas fa-cash-register"></i></a>
         <a href="pedidos.php" title="Pedidos"><i class="fas fa-list-check"></i></a>
         <a href="produccion.php" class="active" title="Producción"><i class="fas fa-screwdriver-wrench"></i></a>
+        <?php if ($puedeVerDiseno): ?>
+        <a href="diseno.php" title="Diseño"><i class="fas fa-palette"></i></a>
+        <?php endif; ?>
         <a href="configuracion.php" title="Configuración"><i class="fas fa-cog"></i></a>
     </div>
 
@@ -1469,5 +1480,6 @@ $mensajeSistema = trim($_GET['msg'] ?? '');
 })();
 </script>
 
+    <script src="assets/js/app_realtime.js"></script>
 </body>
 </html>

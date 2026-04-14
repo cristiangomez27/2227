@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'permisos.php';
 if (!isset($_SESSION['usuario_id'])) { header("Location: index.php"); exit; }
 require_once 'config/database.php';
 require_once 'config/functions.php';
@@ -273,6 +274,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nuevo_producto'])) {
 }
 
 $productos = $conn->query("SELECT * FROM productos ORDER BY categoria ASC, nombre ASC");
+?>
+<?php
+require_once __DIR__ . '/includes/realtime_config.php';
+$appRealtime = app_realtime_config(isset($conn) ? $conn : null);
+$appRealtime['module'] = 'productos';
+?>
+<?php
+$puedeVerDiseno = function_exists('puedeVerModuloDiseno') ? puedeVerModuloDiseno() : false;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -754,8 +763,9 @@ $productos = $conn->query("SELECT * FROM productos ORDER BY categoria ASC, nombr
             }
         }
     </style>
+    <link rel="stylesheet" href="assets/css/dashboard_effect.css">
 </head>
-<body>
+<body data-module="<?php echo htmlspecialchars($appRealtime['module'], ENT_QUOTES, 'UTF-8'); ?>" data-ws-url="<?php echo htmlspecialchars($appRealtime['ws_url'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" data-sound-enabled="<?php echo !empty($appRealtime['sound_enabled']) ? '1' : '0'; ?>" data-sound-file="<?php echo htmlspecialchars($appRealtime['sound_file'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
 
     <div class="mobile-topbar">
         <div class="mobile-topbar-left">
@@ -1068,5 +1078,6 @@ $productos = $conn->query("SELECT * FROM productos ORDER BY categoria ASC, nombr
         <?php endif; ?>
     </script>
 
+    <script src="assets/js/app_realtime.js"></script>
 </body>
 </html>

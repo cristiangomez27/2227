@@ -184,6 +184,11 @@ while ($row = $res->fetch_assoc()) {
 }
 $stmt->close();
 ?>
+<?php
+require_once __DIR__ . '/includes/realtime_config.php';
+$appRealtime = app_realtime_config(isset($conn) ? $conn : null);
+$appRealtime['module'] = 'proveedores_modulo_nuevo';
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -246,8 +251,9 @@ td{padding:12px;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px;ver
 @media (max-width:1100px){.grid{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr}}
 @media (max-width:768px){.content{padding:16px 12px}.hero h1{font-size:26px}}
 </style>
+    <link rel="stylesheet" href="assets/css/dashboard_effect.css">
 </head>
-<body>
+<body data-module="<?php echo htmlspecialchars($appRealtime['module'], ENT_QUOTES, 'UTF-8'); ?>" data-ws-url="<?php echo htmlspecialchars($appRealtime['ws_url'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" data-sound-enabled="<?php echo !empty($appRealtime['sound_enabled']) ? '1' : '0'; ?>" data-sound-file="<?php echo htmlspecialchars($appRealtime['sound_file'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
 <aside class="sidebar">
     <img src="<?php echo e($logoActual); ?>" alt="Logo" class="logo-pos">
     <div class="nav-controls">
@@ -347,5 +353,6 @@ td{padding:12px;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px;ver
         </div>
     </section>
 </main>
+    <script src="assets/js/app_realtime.js"></script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'permisos.php';
 
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: index.php");
@@ -142,6 +143,14 @@ while ($row = $resPedidos->fetch_assoc()) {
     $pedidos[] = $row;
 }
 $stmtPedidos->close();
+?>
+<?php
+require_once __DIR__ . '/includes/realtime_config.php';
+$appRealtime = app_realtime_config(isset($conn) ? $conn : null);
+$appRealtime['module'] = 'pedidos_entregados';
+?>
+<?php
+$puedeVerDiseno = function_exists('puedeVerModuloDiseno') ? puedeVerModuloDiseno() : false;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -363,8 +372,9 @@ $stmtPedidos->close();
             .hero h1{font-size:26px}
         }
     </style>
+    <link rel="stylesheet" href="assets/css/dashboard_effect.css">
 </head>
-<body>
+<body data-module="<?php echo htmlspecialchars($appRealtime['module'], ENT_QUOTES, 'UTF-8'); ?>" data-ws-url="<?php echo htmlspecialchars($appRealtime['ws_url'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" data-sound-enabled="<?php echo !empty($appRealtime['sound_enabled']) ? '1' : '0'; ?>" data-sound-file="<?php echo htmlspecialchars($appRealtime['sound_file'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
     <aside class="sidebar">
         <img src="<?php echo e($logoActual); ?>" alt="Logo" class="logo-pos">
         <div class="nav-controls">
@@ -372,6 +382,7 @@ $stmtPedidos->close();
             <a href="ventas.php" title="Ventas"><i class="fas fa-cash-register"></i></a>
             <a href="clientes.php" title="Clientes"><i class="fas fa-users"></i></a>
             <a href="produccion.php" title="Producción"><i class="fas fa-industry"></i></a>
+            <?php if ($puedeVerDiseno): ?><a href="diseno.php" title="Diseño"><i class="fas fa-palette"></i></a><?php endif; ?>
             <a href="pedidos.php" title="Pedidos"><i class="fas fa-clipboard-list"></i></a>
             <a href="pedidos_entregados.php" title="Entregados" class="active"><i class="fas fa-box-open"></i></a>
             <a href="configuracion.php" title="Configuración"><i class="fas fa-cog"></i></a>
@@ -431,5 +442,6 @@ $stmtPedidos->close();
             <?php endif; ?>
         </section>
     </main>
+    <script src="assets/js/app_realtime.js"></script>
 </body>
 </html>

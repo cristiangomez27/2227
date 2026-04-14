@@ -1,0 +1,70 @@
+:root {
+    --dash-glow: 0 0 0 1px rgba(255,255,255,.06), 0 12px 40px rgba(0,0,0,.45);
+    --dash-glass: rgba(18, 18, 18, .52);
+    --dash-border: rgba(255,255,255,.11);
+}
+
+.glass-card,
+.panel,
+.card,
+.stats-card,
+.content-card,
+section,
+.table-wrap,
+.form-wrap {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: var(--dash-glow);
+    border: 1px solid var(--dash-border);
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(1200px 600px at 95% -20%, rgba(200,155,60,.14), transparent 60%),
+                radial-gradient(900px 500px at -10% 110%, rgba(200,155,60,.09), transparent 58%);
+    z-index: 0;
+}
+
+.sidebar,
+.main,
+main,
+.container,
+.wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.realtime-toast {
+    position: fixed;
+    right: 14px;
+    bottom: 16px;
+    z-index: 9999;
+    padding: 10px 14px;
+    border-radius: 10px;
+    color: #fff;
+    background: rgba(24,24,24,.92);
+    border: 1px solid rgba(255,255,255,.2);
+    box-shadow: var(--dash-glow);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: .24s ease;
+}
+.realtime-toast.show { transform: translateY(0); opacity: 1; }
+
+/* Responsive global */
+img{max-width:100%;height:auto}
+.table-responsive{overflow:auto;-webkit-overflow-scrolling:touch}
+@media (max-width: 992px){
+  .sidebar{width:72px!important}
+  .content,.main{margin-left:72px!important;padding:14px!important}
+}
+@media (max-width: 768px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);transition:.2s;z-index:1200}
+  body.menu-open .sidebar{transform:translateX(0)}
+  .content,.main{margin-left:0!important;padding:12px!important}
+  table{font-size:13px}
+  input,select,button,textarea{font-size:16px}
+}
